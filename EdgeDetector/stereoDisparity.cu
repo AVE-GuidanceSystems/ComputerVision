@@ -67,6 +67,8 @@ runTest(int argc, char **argv)
 
     checkCudaErrors(cudaGetDeviceProperties(&deviceProp, dev));
 
+    printf("This is Justin's Update\n");
+
     // Statistics about the GPU device
     printf("> GPU device has %d Multi-Processors, SM %d.%d compute capabilities\n\n",
            deviceProp.multiProcessorCount, deviceProp.major, deviceProp.minor);

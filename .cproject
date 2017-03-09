@@ -29,6 +29,7 @@
 								<option id="nvcc.compiler.pic.910547735" name="Position Independent Code (-fPIC)" superClass="nvcc.compiler.pic"/>
 								<option id="nvcc.compiler.machine.1451663239" name="Architecture (--machine)" superClass="nvcc.compiler.machine" value="nvcc.compiler.machine64" valueType="enumerated"/>
 								<option id="nvcc.compiler.include.paths.189712043" name="Include paths (-I)" superClass="nvcc.compiler.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="/Developer/NVIDIA/CUDA-8.0/samples/common/inc"/>
 									<listOptionValue builtIn="false" value="&quot;${cuda_samples_dir:/Sample}/3_Imaging&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cuda_samples_dir:/Sample}/common/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Sample}&quot;"/>
@@ -39,6 +40,8 @@
 							</tool>
 							<tool id="nvcc.linker.base.1567717054" name="NVCC Linker" superClass="nvcc.linker.base">
 								<option id="nvcc.linker.option.machine.292635628" name="Architecture (--machine)" superClass="nvcc.linker.option.machine" value="nvcc.linker.machine64" valueType="enumerated"/>
+								<option id="nvcc.linker.option.userobjs.1067220216" name="Other objects" superClass="nvcc.linker.option.userobjs" valueType="userObjs"/>
+								<option id="nvcc.linker.option.paths.1523864483" name="Library search path (-L)" superClass="nvcc.linker.option.paths" valueType="libPaths"/>
 								<inputType id="nvcc.linker.input.1192002201" superClass="nvcc.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -60,6 +63,7 @@
 					<sass major="3" minor="0"/>
 					<ptx major="3" minor="0"/>
 				</executable>
+				<editor-arch major="3" minor="0"/>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
@@ -89,8 +93,8 @@
 								<option id="nvcc.compiler.option.level.924141441" name="Generate host debug information (-g)" superClass="nvcc.compiler.option.level"/>
 								<option defaultValue="nvcc.compiler.optimization.level.most" id="nvcc.compiler.optimization.level.1319626995" name="Optimization Level" superClass="nvcc.compiler.optimization.level" valueType="enumerated"/>
 								<option id="nvcc.compiler.pic.708652134" name="Position Independent Code (-fPIC)" superClass="nvcc.compiler.pic"/>
-								<option id="nvcc.compiler.machine.1460879674" superClass="nvcc.compiler.machine" value="nvcc.compiler.machine64" valueType="enumerated"/>
-								<option id="nvcc.compiler.include.paths.286214993" superClass="nvcc.compiler.include.paths" valueType="includePath">
+								<option id="nvcc.compiler.machine.1460879674" name="Architecture (--machine)" superClass="nvcc.compiler.machine" value="nvcc.compiler.machine64" valueType="enumerated"/>
+								<option id="nvcc.compiler.include.paths.286214993" name="Include paths (-I)" superClass="nvcc.compiler.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${cuda_samples_dir:/Sample}/3_Imaging&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cuda_samples_dir:/Sample}/common/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Sample}&quot;"/>
@@ -100,7 +104,14 @@
 								<inputType id="nvcc.compiler.input.c.1771592699" superClass="nvcc.compiler.input.c"/>
 							</tool>
 							<tool id="nvcc.linker.base.1550363058" name="NVCC Linker" superClass="nvcc.linker.base">
-								<option id="nvcc.linker.option.machine.962136479" superClass="nvcc.linker.option.machine" value="nvcc.linker.machine64" valueType="enumerated"/>
+								<option id="nvcc.linker.option.machine.962136479" name="Architecture (--machine)" superClass="nvcc.linker.option.machine" value="nvcc.linker.machine64" valueType="enumerated"/>
+								<option id="nvcc.linker.option.userobjs.600458617" name="Other objects" superClass="nvcc.linker.option.userobjs" valueType="userObjs">
+									<listOptionValue builtIn="false" value="/Developer/NVIDIA/CUDA-8.0/samples/common/lib/darwin/libGLEW.a"/>
+								</option>
+								<option id="nvcc.linker.option.paths.8912240" name="Library search path (-L)" superClass="nvcc.linker.option.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="/Developer/NVIDIA/CUDA-8.0/samples/common/lib/darwin"/>
+									<listOptionValue builtIn="false" value=""/>
+								</option>
 								<inputType id="nvcc.linker.input.1363579204" superClass="nvcc.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -123,6 +134,7 @@
 					<sass major="3" minor="0"/>
 					<ptx major="3" minor="0"/>
 				</executable>
+				<editor-arch major="3" minor="0"/>
 			</storageModule>
 		</cconfiguration>
 	</storageModule>
@@ -143,4 +155,14 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule cpu="Native" moduleId="nsight.localTarget"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/Sample"/>
+		</configuration>
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/Sample"/>
+		</configuration>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>
