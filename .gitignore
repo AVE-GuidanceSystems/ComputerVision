@@ -38,3 +38,4 @@
 *.exe
 *.out
 *.app
+/.ptp-sync/
