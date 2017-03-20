@@ -7,7 +7,7 @@ Preliminary Upload for computer vision using OpenCV
   every pixle will be generated that can then be scanned for particular patterns.
 
 # Development Branch
-  This branch is where the magic happens. Testing and implementation of new features occur here using an Xcode C++ environement. After testing the code is merged into master and modified for the final Linux environment and hardware.
+  This branch is where the magic happens. Testing and implementation of new features occur here using an Nsight C++ environement. After testing the code is merged into master and modified for the final Linux environment and hardware.
 
   Master is to be a "ready to run" C++ executable for our Linux environment
 
