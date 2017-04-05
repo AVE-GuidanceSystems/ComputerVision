@@ -129,7 +129,7 @@ int main(void)
 				// Match Images - Move to function?
 			double matching_time = (double)getTickCount();
 			sbm(imageL, imageR, disp);
-			normalize(disp, disp8, 0, 255, CV_MINMAX, CV_8U);
+			disp.convertTo(disp8, CV_8U);
 			matching_time = ((double)getTickCount() - matching_time)/getTickFrequency();
 
 			double filtering_time = (double)getTickCount();
