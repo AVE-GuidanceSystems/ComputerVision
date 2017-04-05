@@ -30,6 +30,7 @@ string rightImagePath = testImageDirectory + "chair_right.jpg";
 
 int main(void)
 {
+	cout << "testing" << endl;
 	int camNum[cameraCount] = {0,2};
 	VideoCapture cam[cameraCount];
 
