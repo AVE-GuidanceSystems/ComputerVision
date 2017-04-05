@@ -56,7 +56,7 @@ local.properties
 
 ## Eclipse
 # Eclipse Core
-.project
+#.project
 
 # External tool builders
 .externalToolBuilders/
@@ -68,7 +68,7 @@ local.properties
 *.pydevproject
 
 # CDT-specific (C/C++ Development Tooling)
-.cproject
+#.cproject
 
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
