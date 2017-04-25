@@ -10,29 +10,45 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <string>
+#include "string_helper.hpp"
 
 #include <numeric>
 #include <stdlib.h>
+#include <time.h>
 
-#include <opencv2/opencv.hpp>
-//#include <opencv2/core/core.hpp>
-//#include <opencv2/highgui/highgui.hpp>
-//#include <opencv2/objdetect/objdetect.hpp>
-//#include <opencv2/imgproc.hpp>
+#include <opencv2/calib3d.hpp>
+#include "opencv2/objdetect/objdetect.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "string_helper.hpp"
 
 using namespace cv;
 using namespace std;
 
+/** Function Headers */
+void detectAndDisplay( Mat frame );
+
+/** Global variables */
 const int cameraCount = 2; //set to 0 to use images
 string testImageDirectory = "../testImages/";
 string leftImagePath = testImageDirectory + "chair_left.jpg";
 string rightImagePath = testImageDirectory + "chair_right.jpg";
+String face_cascade_name = "/usr/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml";
+String fullbody_cascade_name = "/usr/share/OpenCV/haarcascades/haarcascade_fullbody.xml";
+CascadeClassifier face_cascade;
+CascadeClassifier fullbody_cascade;
+string window_name = "Capture - Face detection";
 
 int main(void)
 {
-	int camNum[cameraCount] = {0,2};
-	VideoCapture cam[cameraCount];
+//-- 1. Load the cascades
+	if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
+	if( !fullbody_cascade.load( fullbody_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
 
+	cout << "testing" << endl;
+	int camNum[cameraCount] = {1,2};
+	VideoCapture cam[cameraCount];
 
 		for (int i = 0; i < cameraCount; i++) {
 			cam[i] = VideoCapture(camNum[i]);
@@ -55,14 +71,10 @@ int main(void)
 			}
 		}
 
-
 		int maxDisp = 48; // TODO: - Max Disparity calculations
-
 		maxDisp/=2;
 		if(maxDisp%16!=0)
 			maxDisp += 16-(maxDisp%16);
-
-		//StereoBM_GPU sbgpu;
 
 		StereoBM sbm = StereoBM(CV_STEREO_BM_BASIC, maxDisp, 21); // TODO: - Modify block size
 
@@ -86,6 +98,7 @@ int main(void)
 
 		for (;;)
 		{
+			double frame_timer = (double)getTickCount();
 
 			if (cameraCount != 0) {
 
@@ -120,7 +133,8 @@ int main(void)
 			}
 
 
-
+			//TODO stereoRectifyUncalibrated();
+			detectAndDisplay(imageL); // detect faces and bodies based on left camera
 
 			cvtColor(imageL, imageL, CV_BGR2GRAY); //to Gray image
 			cvtColor(imageR, imageR, CV_BGR2GRAY); //to Gray image
@@ -129,19 +143,101 @@ int main(void)
 				// Match Images - Move to function?
 			double matching_time = (double)getTickCount();
 			sbm(imageL, imageR, disp);
+
+			filterSpeckles(disp, 0, 10, 5);
+
 			disp.convertTo(disp8, CV_8U);
 			matching_time = ((double)getTickCount() - matching_time)/getTickFrequency();
 
 			double filtering_time = (double)getTickCount();
 			filtering_time = ((double)getTickCount() - filtering_time)/getTickFrequency();
 
+			frame_timer = ((double)getTickCount() - frame_timer)/getTickFrequency();
+
+			double fps = 1/frame_timer;
+
+			putText(disp8, stringify(fps), cvPoint(30,30),
+			    FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(255,0,0), 1, CV_AA);
+
 			//show both raw and edges
 			imshow("RawL", imageL);
 			imshow("RawR", imageR);
-			imshow("raw disparity", disp8);
+			imshow("Raw Disparity", disp8);
 
-			if (waitKey(30) >= 'q') break; //quit when 'q' is pressed
+			if (waitKey(30) == 'q') break; //quit when 'q' is pressed
 		}
 		// the camera will be deinitialized automatically in VideoCapture destructor
 		return 0;
+}
+
+
+/*int main( int argc, const char** argv )
+{
+CvCapture* capture;
+Mat frame;
+
+
+//-- 2. Read the video stream
+capture = cvCaptureFromCAM( 0 ); //using external usb camera .. "-1" is default
+if( capture )
+{
+ while( true )
+ {
+frame = cvQueryFrame( capture );
+
+//-- 3. Apply the classifier to the frame
+   if( !frame.empty() )
+   { detectAndDisplay( frame ); }
+   else
+   { printf(" --(!) No captured frame -- Break!"); break; }
+
+   int c = waitKey(10);
+   if( (char)c == 'c' ) { break; }
+  }
+}
+return 0;
+}*/
+
+/** @function detectAndDisplay */
+void detectAndDisplay( Mat frame )
+{
+Mat frame_gray;
+clock_t frame_timer = clock(); //begin time counter for FPS
+
+cvtColor( frame, frame_gray, CV_BGR2GRAY );
+equalizeHist( frame_gray, frame_gray );
+
+//-- Detect faces
+std::vector<Rect> faces;
+face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+
+for( size_t i = 0; i < faces.size(); i++ ){
+	Point face_center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
+	ellipse( frame, face_center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 0 ),4);
+	Mat faceROI = frame_gray( faces[i] );
+}
+
+//-- Full Body Detection
+/*std::vector<Rect> body;
+fullbody_cascade.detectMultiScale( frame_gray, body, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+
+
+for(size_t i = 0; i<body.size(); i++){
+	Point p1(body[i].x, body[i].y ); //origin point
+	Point p2(body[i].x + body[i].height, body[i].y + body[i].width);//Opposite corner
+	cv::rectangle( frame, p1, p2, Scalar( 0, 255, 0 ));
+
+	Mat faceROI = frame_gray( body[i] );
+}
+*/
+
+//-- Visual Display w/ FPS
+
+double frame_period = (clock() - frame_timer); //Displaced time period
+//cout << frame_period << " divided by " << CLOCKS_PER_SEC << " = " << frame_period/CLOCKS_PER_SEC << endl;
+double fps = 1/(frame_period/CLOCKS_PER_SEC); //convert to frequency
+putText(frame, stringify(fps), cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(255,0,0), 1, CV_AA);
+
+
+imshow( window_name, frame );
 }
